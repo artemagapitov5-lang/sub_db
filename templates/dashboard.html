@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.3.7/af-2.7.1/b-3.2.6/b-colvis-3.2.6/b-html5-3.2.6/b-print-3.2.6/cr-2.1.2/cc-1.2.1/date-1.6.3/fc-5.0.5/fh-4.0.6/kt-2.12.2/r-3.0.8/rg-1.6.0/rr-1.5.1/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.css" rel="stylesheet" integrity="sha384-4c//+i51q40LZKpaxM2Rl0/OCYx7bQNnhhmGCzrc9+6QuI0x2LmLv6sE4r8vFhf3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Основной контент -->
+    <h1>Subscribers-DB</h1>
+        <div class="user-dropdown">
+            <button class="user-badge">{{.}} ▼</button>
+            <div class="dropdown-menu">
+                <a href="/logout">Выйти</a>
+            </div>
+        </div>
+    <button id="addClientBtn">➕ Добавить клиента</button>
+    <table id="subscribersTable" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>Город</th>
+                <th>Адрес</th>
+                <th>Телефон</th>
+                <th>IP</th>
+                <th>Логин</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Добавить клиента</h2>
+
+            <input id="fio" placeholder="ФИО">
+            <input id="city" placeholder="Город">
+            <input id="address" placeholder="Адрес">
+            <input id="phone" placeholder="Телефон">
+            <input id="ip" placeholder="IP">
+            <input id="login" placeholder="Логин">
+
+            <button id="saveClient">Сохранить</button>
+            <button id="closeModal">Закрыть</button>
+        </div>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.3.7/af-2.7.1/b-3.2.6/b-colvis-3.2.6/b-html5-3.2.6/b-print-3.2.6/cr-2.1.2/cc-1.2.1/date-1.6.3/fc-5.0.5/fh-4.0.6/kt-2.12.2/r-3.0.8/rg-1.6.0/rr-1.5.1/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.js" integrity="sha384-Nbk8zAXdE6U9CegziwmO4J8ErhupUlANdiq76qR6lDI92ZBNgWwRw0JhKkBM0QkW" crossorigin="anonymous"></script>
+    <script>
+        let table;
+
+        $(document).ready(function() {
+            table = $('#subscribersTable').DataTable({
+                ajax: '/api/clients',
+                colReorder: true,
+                colReorder: true,
+                responsive: true,
+                fixedHeader: true,
+                scrollY:        '55vh',
+                deferRender:    true,
+                scroller:       true,
+                select: true,
+                columnControl: [ ['searchList'] ],
+                    ordering: {
+                    indicators: false,
+                    handler: true
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'fio' },
+                    { data: 'city' },
+                    { data: 'address' },
+                    { data: 'phone' },
+                    { data: 'ip' },
+                    { data: 'login' },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            return `<button class="deleteBtn" data-id="${row.id}">🗑</button>`;
+                        }
+                    }
+                ],
+
+                dom: 'Bfrtip', // показывает кнопки сверху
+                buttons: ['copy', 'excel', 'pdf', 'colvis' ]
+            });
+        });
+
+        // открыть модалку
+        $('#addClientBtn').on('click', function () {
+            $('#modal').show();
+        });
+
+        // закрыть
+        $('#closeModal').on('click', function () {
+            $('#modal').hide();
+        });
+
+        // сохранить клиента
+        $('#saveClient').on('click', function () {
+
+            let client = {
+                fio: $('#fio').val(),
+                city: $('#city').val(),
+                address: $('#address').val(),
+                phone: $('#phone').val(),
+                ip: $('#ip').val(),
+                login: $('#login').val()
+            };
+
+            fetch('/api/clients/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(client)
+            })
+            .then(res => res.json())
+            .then(() => {
+                $('#modal').hide();
+                table.ajax.reload(); // обновляем таблицу
+            });
+        });
+
+        $('#subscribersTable tbody').on('click', 'td', function () {
+
+        let cell = table.cell(this);
+        let oldValue = cell.data();
+        let colIndex = cell.index().column;
+
+        // не редактируем ID
+        if (colIndex === 0) return;
+
+        // уже есть input — не трогаем
+        if ($(this).find('input').length) return;
+
+        let input = $('<input type="text">').val(oldValue);
+        $(this).html(input);
+
+        input.focus();
+
+        input.on('blur', function () {
+            let newValue = $(this).val();
+
+            // если не изменилось — вернуть обратно
+            if (newValue === oldValue) {
+                cell.data(oldValue).draw();
+                return;
+            }
+
+            let rowData = table.row(cell.index().row).data();
+
+            // обновляем поле
+            let fields = ['id','fio','city','address','phone','ip','login'];
+            rowData[fields[colIndex]] = newValue;
+
+            fetch('/api/clients/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(rowData)
+            })
+            .then(res => res.json())
+            .then(() => {
+                cell.data(newValue).draw();
+            })
+            .catch(() => {
+                cell.data(oldValue).draw();
+            });
+        });
+
+        $('#subscribersTable tbody').on('click', '.deleteBtn', function () {
+
+            let id = $(this).data('id');
+
+            if (!confirm('Удалить клиента?')) return;
+
+            fetch('/api/clients/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(res => res.json())
+            .then(() => {
+                $('#subscribersTable').DataTable().ajax.reload(null, false);
+            });
+        });
+
+        $(document).ready(function () {
+            $('.user-badge').on('click', function(e) {
+                e.stopPropagation(); // чтобы клик по кнопке не закрывал меню сразу
+                $(this).siblings('.dropdown-menu').toggleClass('show');
+            });
+
+            $(document).on('click', function() {
+                $('.dropdown-menu').removeClass('show');
+            });
+        });
+    });
+    </script>
+</body>
+</html>

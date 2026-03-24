@@ -1,0 +1,241 @@
+body {
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 20px;
+    user-select: none;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #38bdf8;
+}
+
+/* Таблица */
+table.dataTable {
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table.dataTable thead {
+    background: #334155;
+}
+
+table.dataTable thead th {
+    color: #e2e8f0;
+    font-weight: 600;
+    border-bottom: none;
+}
+
+table.dataTable tbody tr {
+    transition: 0.2s;
+}
+
+table.dataTable tbody tr:hover {
+    background: #38bdf8;
+}
+
+/* Ячейки */
+table.dataTable td {
+    color: #0a0b0c;
+}
+
+/* Поиск */
+.dataTables_filter input {
+    background: #1e293b;
+    border: 1px solid #475569;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+
+/* Пагинация */
+.dataTables_paginate .paginate_button {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    border-radius: 6px;
+    margin: 2px;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background: #38bdf8 !important;
+    color: #0f172a !important;
+}
+
+/* Кнопки */
+.dt-button {
+    background: #38bdf8 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: #0f172a !important;
+    padding: 6px 12px !important;
+    margin-right: 5px !important;
+    transition: 0.2s;
+}
+
+.dt-button:hover {
+    background: #0ea5e9 !important;
+}
+
+/* Select row */
+table.dataTable tbody tr.selected {
+    background: #0284c7 !important;
+}
+
+/* Скролл */
+.dataTables_wrapper .dataTables_scrollBody {
+    border: none;
+}
+
+/* Мелкие элементы */
+.dataTables_info {
+    color: #94a3b8;
+}
+
+.dataTables_length select {
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #475569;
+    border-radius: 6px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    background: #1e293b;
+    margin: 10% auto;
+    padding: 20px;
+    width: 300px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal input {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #475569;
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+.modal button {
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    background: #38bdf8;
+    color: #0f172a;
+    cursor: pointer;
+}
+
+.modal button:hover {
+    background: #0ea5e9;
+}
+
+#addClientBtn {
+    background: #38bdf8;       /* голубой, как кнопки DataTables */
+    color: #0f172a;             /* тёмный текст */
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+#addClientBtn:hover {
+    background: #0ea5e9;       /* чуть ярче при наведении */
+}
+
+td input {
+    width: 100%;
+    background: #1e293b;
+    color: white;
+    border: 1px solid #38bdf8;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.deleteBtn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.deleteBtn:hover {
+    background: #dc2626;
+}
+
+.topbar {
+    width: 100%;
+    height: 60px;
+    background: #0f172a;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    right: 200px;
+}
+
+.user-badge {
+    background: #38bdf8;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 50px; /* овал */
+    font-weight: bold;
+    font-size: 14px;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+}
+
+main {
+    padding: 20px;
+}
+
+/* Скрытое меню */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #2c2c3e;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    margin-top: 5px;
+    min-width: 100px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background: #4CAF50;
+}
